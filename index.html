@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>دليل الأمن السيبراني التفاعلي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&amp;family=Cairo:wght@300;400;600;700;900&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --primary: #0a6ebd;
+    --primary-light: #1a8fd1;
+    --accent: #00c9a7;
+    --accent2: #f59e0b;
+    --bg: #f0f6ff;
+    --surface: rgba(255,255,255,0.85);
+    --surface2: rgba(255,255,255,0.95);
+    --text: #0d1b2a;
+    --text-muted: #4a6080;
+    --border: rgba(10,110,189,0.15);
+    --shadow: 0 4px 24px rgba(10,110,189,0.10);
+    --shadow-lg: 0 8px 40px rgba(10,110,189,0.18);
+    --grid-color: rgba(10,110,189,0.07);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    direction: rtl;
+    padding-top: 72px;
+  }
+
+  /* ── ANIMATED BACKGROUND ── */
+  .bg-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    background: linear-gradient(135deg, #e8f4ff 0%, #f0faff 40%, #e6fff8 70%, #fffbea 100%);
+  }
+
+  /* Floating grid */
+  .bg-canvas::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridDrift 30s linear infinite;
+  }
+
+  @keyframes gridDrift {
+    0%   { transform: translate(0,0); }
+    100% { transform: translate(50px,50px); }
+  }
+
+  /* Floating blobs */
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.35;
+    animation: blobFloat linear infinite;
+  }
+  .blob-1 { width:400px; height:400px; background:#a8d8ff; top:-100px; left:-100px; animation-duration:20s; }
+  .blob-2 { width:300px; height:300px; background:#b2f5e8; top:40%; right:-80px; animation-duration:25s; animation-delay:-8s; }
+  .blob-3 { width:250px; height:250px; background:#fde68a; bottom:10%; left:20%; animation-duration:18s; animation-delay:-4s; }
+  .blob-4 { width:200px; height:200px; background:#c7d2fe; bottom:20%; right:30%; animation-duration:22s; animation-delay:-12s; }
+
+  @keyframes blobFloat {
+    0%,100% { transform: translate(0,0) scale(1); }
+    33%      { transform: translate(30px,-20px) scale(1.05); }
+    66%      { transform: translate(-20px,15px) scale(0.97); }
+  }
+
+  /* Floating binary / circuit symbols */
+  .particle { position:absolute; font-family:monospace; font-size:13px; color:rgba(10,110,189,0.15); font-weight:700; animation: particleFall linear infinite; pointer-events:none; user-select:none; }
+
+  @keyframes particleFall {
+    0%   { transform: translateY(-30px); opacity:0; }
+    10%  { opacity:1; }
+    90%  { opacity:0.7; }
+    100% { transform: translateY(100vh); opacity:0; }
+  }
+
+  /* Animated shield pulse in background */
+  .bg-shield {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    opacity: 0.04;
+    animation: shieldPulse 6s ease-in-out infinite;
+  }
+
+  @keyframes shieldPulse {
+    0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 0.04; }
+    50%      { transform: translate(-50%,-50%) scale(1.08); opacity: 0.07; }
+  }
+
+  /* ── LAYOUT ── */
+  .page { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    padding: 50px 20px 40px;
+    position: relative;
+  }
+
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 18px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 16px rgba(0,201,167,0.3);
+    animation: badgePop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+
+  @keyframes badgePop {
+    from { transform: scale(0.5); opacity:0; }
+    to   { transform: scale(1); opacity:1; }
+  }
+
+  .header h1 {
+    font-family: 'Cairo', sans-serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 900;
+    line-height: 1.2;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 60%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    animation: fadeUp 0.8s ease both 0.2s;
+  }
+
+  .header p {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto 32px;
+    line-height: 1.8;
+    animation: fadeUp 0.8s ease both 0.4s;
+  }
+
+  @keyframes fadeUp {
+    from { transform: translateY(20px); opacity:0; }
+    to   { transform: translateY(0); opacity:1; }
+  }
+
+  /* Stats row */
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s ease both 0.6s;
+  }
+
+  .stat-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 28px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+  .stat-card .stat-num {
+    font-family: 'Cairo', sans-serif;
+    font-size: 32px;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-card .stat-label { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  }
+  }
+
+  /* ── MINISTRY TOP BAR ── */
+  .ministry-top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    height: 64px;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1.5px solid rgba(10,110,189,0.13);
+    box-shadow: 0 2px 20px rgba(10,110,189,0.10);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    direction: ltr;
+  }
+
+  .ministry-logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .ministry-logo-img {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+
+  .ministry-logo-img:hover { transform: scale(1.07) rotate(-2deg); }
+
+  .ministry-logo-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ministry-logo-text .logo-ar {
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    color: #1b4f72;
+    line-height: 1.3;
+  }
+
+  .ministry-logo-text .logo-en {
+    font-family: 'Cairo', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    color: #4a6080;
+    line-height: 1.2;
+  }
+
+  /* ── NAV ── */
+  .nav-container {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 10px;
+    margin: 32px 0 24px;
+    box-shadow: var(--shadow);
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.8s ease both 0.5s;
+    position: sticky;
+    top: 16px;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 18px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: transparent;
+    transition: all 0.25s;
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .nav-btn .nav-icon {
+    font-size: 20px;
+    transition: transform 0.3s;
+  }
+
+  .nav-btn:hover { color: var(--primary); background: rgba(10,110,189,0.06); }
+  .nav-btn:hover .nav-icon { transform: scale(1.2); }
+
+  .nav-btn.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(10,110,189,0.3);
+  }
+
+  .nav-btn.active .nav-icon { transform: scale(1.1); }
+
+  .nav-btn .nav-label { font-size: 13px; }
+
+  /* ── SECTIONS ── */
+  .section { display: none; animation: sectionIn 0.5s ease both; }
+  .section.active { display: block; }
+
+  @keyframes sectionIn {
+    from { opacity:0; transform: translateY(16px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  .section-title {
+    font-family: 'Cairo', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--primary);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-subtitle { font-size: 15px; color: var(--text-muted); margin-bottom: 24px; }
+
+  /* ── PROTECTION CARDS ── */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+
+  .prot-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .prot-card::before {
+    content:'';
+    position:absolute;
+    top:0; right:0;
+    width:120px; height:120px;
+    border-radius: 0 0 0 120px;
+    opacity: 0.07;
+  }
+
+  .prot-card:nth-child(1)::before { background: #0a6ebd; }
+  .prot-card:nth-child(2)::before { background: #00c9a7; }
+  .prot-card:nth-child(3)::before { background: #f59e0b; }
+  .prot-card:nth-child(4)::before { background: #8b5cf6; }
+  .prot-card:nth-child(5)::before { background: #ef4444; }
+  .prot-card:nth-child(6)::before { background: #06b6d4; }
+
+  .prot-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+
+  .prot-card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .prot-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .prot-card:nth-child(1) .prot-icon { background: linear-gradient(135deg,#dbeafe,#bfdbfe); }
+  .prot-card:nth-child(2) .prot-icon { background: linear-gradient(135deg,#d1fae5,#a7f3d0); }
+  .prot-card:nth-child(3) .prot-icon { background: linear-gradient(135deg,#fef3c7,#fde68a); }
+  .prot-card:nth-child(4) .prot-icon { background: linear-gradient(135deg,#ede9fe,#ddd6fe); }
+  .prot-card:nth-child(5) .prot-icon { background: linear-gradient(135deg,#fee2e2,#fecaca); }
+  .prot-card:nth-child(6) .prot-icon { background: linear-gradient(135deg,#cffafe,#a5f3fc); }
+
+  .prot-card-title { font-family:'Cairo',sans-serif; font-size:17px; font-weight:800; color:var(--text); }
+  .prot-card-sub   { font-size:12px; color:var(--text-muted); margin-top:2px; }
+
+  .checklist { list-style:none; display:flex; flex-direction:column; gap:10px; }
+
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 10px;
+    transition: background 0.2s;
+    border: 1px solid transparent;
+  }
+
+  .checklist li:hover { background: rgba(10,110,189,0.04); border-color: var(--border); }
+
+  .checklist li.checked { color: var(--text-muted); text-decoration: line-through; }
+
+  .check-box {
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    border: 2px solid var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.2s;
+    background: transparent;
+  }
+
+  .checklist li.checked .check-box {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  /* ── SIMULATION SECTION ── */
+  .sim-container {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .sim-header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    padding: 24px 28px;
+    color: white;
+  }
+
+  .sim-title { font-family:'Cairo',sans-serif; font-size:20px; font-weight:900; }
+  .sim-desc  { font-size:13px; opacity:0.85; margin-top:4px; }
+
+  .sim-body { padding: 28px; }
+
+  .sim-scenario {
+    background: #f8fafd;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .sim-scenario p { font-size:15px; line-height:1.8; color:var(--text); }
+
+  .scenario-icon { font-size: 40px; margin-bottom: 12px; }
+
+  .sim-options { display:flex; flex-direction:column; gap:12px; }
+
+  .sim-option {
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    background: white;
+    cursor: pointer;
+    font-family:'Tajawal',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    color: var(--text);
+    text-align:right;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sim-option:hover { border-color: var(--primary); background: #eff6ff; transform: translateX(-4px); }
+  .sim-option.correct { border-color: var(--accent); background: #ecfdf5; color: #065f46; }
+  .sim-option.wrong   { border-color: #ef4444; background: #fef2f2; color: #991b1b; }
+
+  .sim-result {
+    margin-top:18px;
+    padding:16px;
+    border-radius:12px;
+    font-size:14px;
+    font-weight:600;
+    line-height:1.7;
+    display:none;
+  }
+
+  .sim-result.show { display:block; }
+  .sim-result.good { background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; }
+  .sim-result.bad  { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
+
+  .sim-next-btn {
+    margin-top:16px;
+    padding:12px 28px;
+    border-radius:12px;
+    border:none;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color:white;
+    font-family:'Tajawal',sans-serif;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition: opacity 0.2s, transform 0.2s;
+    display:none;
+  }
+
+  .sim-next-btn.show { display:inline-block; }
+  .sim-next-btn:hover { opacity:0.9; transform:scale(1.03); }
+
+  .progress-bar-wrap {
+    background: #e2eaf4;
+    border-radius: 100px;
+    height: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 100px;
+    transition: width 0.5s ease;
+  }
+
+  /* ── QUIZ ── */
+  .quiz-wrap { max-width: 720px; margin: 0 auto; }
+
+  .quiz-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .quiz-q-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .quiz-q-num {
+    font-size:13px;
+    font-weight:700;
+    color: var(--primary);
+    background: rgba(10,110,189,0.1);
+    padding: 5px 14px;
+    border-radius: 100px;
+  }
+
+  .quiz-q-text {
+    font-family:'Cairo',sans-serif;
+    font-size:18px;
+    font-weight:800;
+    line-height:1.6;
+    color:var(--text);
+    margin-bottom:22px;
+  }
+
+  .quiz-options { display:flex; flex-direction:column; gap:12px; }
+
+  .quiz-opt {
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    background: white;
+    cursor: pointer;
+    font-family:'Tajawal',sans-serif;
+    font-size:15px;
+    font-weight:600;
+    color: var(--text);
+    text-align:right;
+    transition: all 0.22s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .quiz-opt:hover:not(.answered) { border-color:var(--primary); background:#eff6ff; }
+  .quiz-opt.correct { border-color:var(--accent); background:#ecfdf5; color:#065f46; }
+  .quiz-opt.wrong   { border-color:#ef4444; background:#fef2f2; color:#991b1b; }
+
+  .opt-letter {
+    width:30px; height:30px;
+    border-radius:8px;
+    background: rgba(10,110,189,0.1);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    font-size:13px;
+    color: var(--primary);
+    flex-shrink:0;
+  }
+
+  .quiz-opt.correct .opt-letter { background:#a7f3d0; color:#065f46; }
+  .quiz-opt.wrong   .opt-letter { background:#fecaca; color:#991b1b; }
+
+  .quiz-feedback {
+    margin-top:16px;
+    padding:14px 18px;
+    border-radius:12px;
+    font-size:14px;
+    line-height:1.7;
+    font-weight:600;
+    display:none;
+  }
+
+  .quiz-feedback.show { display:block; }
+  .quiz-feedback.correct { background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; }
+  .quiz-feedback.wrong   { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
+
+  .quiz-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    gap: 12px;
+  }
+
+  .quiz-btn {
+    padding: 12px 26px;
+    border-radius: 12px;
+    border: none;
+    font-family:'Tajawal',sans-serif;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    transition: all 0.22s;
+  }
+
+  .quiz-btn-primary { background:linear-gradient(135deg,var(--primary),var(--accent)); color:white; }
+  .quiz-btn-primary:hover { opacity:0.9; transform:scale(1.03); }
+  .quiz-btn-secondary { background:#f1f5f9; color:var(--text-muted); }
+  .quiz-btn-secondary:hover { background:#e2e8f0; }
+
+  .quiz-score-card {
+    text-align:center;
+    padding:40px 20px;
+  }
+
+  .score-emoji { font-size:70px; animation: scorePop 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+  @keyframes scorePop {
+    from { transform:scale(0); }
+    to   { transform:scale(1); }
+  }
+
+  .score-num {
+    font-family:'Cairo',sans-serif;
+    font-size:64px;
+    font-weight:900;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    line-height:1;
+    margin:16px 0 8px;
+  }
+
+  .score-label { font-size:18px; color:var(--text-muted); margin-bottom:24px; }
+
+  .score-msg {
+    font-size:16px;
+    font-weight:700;
+    padding:14px 24px;
+    border-radius:14px;
+    display:inline-block;
+    margin-bottom:24px;
+  }
+
+  .score-msg.great { background:#ecfdf5; color:#065f46; }
+  .score-msg.good  { background:#fef3c7; color:#92400e; }
+  .score-msg.poor  { background:#fef2f2; color:#991b1b; }
+
+  /* ── TIPS ── */
+  .tips-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px; }
+
+  .tip-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tip-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); }
+
+  .tip-num {
+    position:absolute;
+    top:14px; left:14px;
+    width:28px; height:28px;
+    border-radius:8px;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:white;
+    font-size:12px;
+    font-weight:900;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .tip-icon { font-size:32px; margin-bottom:10px; }
+  .tip-title { font-family:'Cairo',sans-serif; font-size:15px; font-weight:800; color:var(--text); margin-bottom:6px; }
+  .tip-body  { font-size:13px; color:var(--text-muted); line-height:1.7; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align:center;
+    padding:36px 20px 80px;
+    border-top:1px solid var(--border);
+    margin-top:60px;
+  }
+
+  .footer-logo { font-family:'Cairo',sans-serif; font-size:20px; font-weight:900; color:var(--primary); margin-bottom:6px; }
+  .footer-sub  { font-size:13px; color:var(--text-muted); }
+
+  /* ── STICKY BOTTOM BAR ── */
+  .sticky-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 200;
+    background: linear-gradient(90deg, var(--primary) 0%, #0e85d8 50%, var(--accent) 100%);
+    color: white;
+    text-align: center;
+    padding: 10px 20px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.7;
+    box-shadow: 0 -4px 20px rgba(10,110,189,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .sticky-bar .bar-sep {
+    opacity: 0.5;
+    margin: 0 4px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:640px) {
+    .nav-btn .nav-label { display:none; }
+    .nav-btn { padding:12px 14px; }
+    .nav-btn .nav-icon { font-size:22px; }
+    .cards-grid { grid-template-columns:1fr; }
+    .tips-grid  { grid-template-columns:1fr; }
+  }
+
+/* ── Accessibility Enhancements ── */
+:focus-visible { outline: 3px solid rgba(0,201,167,0.65); outline-offset: 3px; }
+.skip-link{ position:absolute; top:-40px; right:16px; background:#0a6ebd; color:#fff; padding:10px 14px; border-radius:10px; z-index:10000; transition:top .2s; font-weight:800; }
+.skip-link:focus{ top:12px; }
+</style>
+<meta content="دليل تفاعلي للأمن السيبراني: حماية الحسابات، محاكاة اختراق، اختبار، ونصائح توعوية." name="description"/>
+<!-- GA4 START -->
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TB0ENH4BEM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TB0ENH4BEM', {
+    page_title: document.title,
+    page_path: window.location.pathname + window.location.search + window.location.hash
+  });
+</script>
+<!-- GA4 END -->
+</head>
+<body><a class="skip-link" href="#app">تخطي إلى المحتوى</a>
+<!-- Animated Background -->
+<div class="bg-canvas">
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+<div class="blob blob-4"></div>
+<!-- Background shield SVG -->
+<svg class="bg-shield" fill="none" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<path d="M50 5L10 20V50C10 70 30 88 50 95C70 88 90 70 90 50V20L50 5Z" fill="#0a6ebd"></path>
+<path d="M35 50L45 60L65 40" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"></path>
+</svg>
+</div>
+
+<div class="page" id="app">
+<!-- Ministry of Education Logo -->
+<div class="ministry-top-bar"><div class="ministry-logo-wrap">
+<img alt="وزارة التعليم" class="ministry-logo-img" src="data:image/jpeg;base64,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"/>
+<div class="ministry-logo-text">
+<span class="logo-ar">وزارة التعليم</span>
+<span class="logo-en">Ministry of Education</span>
+</div>
+</div>
+</div>
+<!-- Header -->
+<header class="header">
+<div class="header-badge">🛡️ الأمن السيبراني التفاعلي</div>
+<h1>احمِ حساباتك — كن درعك الرقمي</h1>
+<p>دليل شامل وتفاعلي لحماية هويتك الرقمية — تطبيقات عملية، محاكاة اختراق، مسابقات، وأدوات توعوية</p>
+<div class="stats-row">
+<div class="stat-card">
+<div class="stat-num">87%</div>
+<div class="stat-label">من الاختراقات قابلة للمنع</div>
+</div>
+<div class="stat-card">
+<div class="stat-num">5</div>
+<div class="stat-label">وحدات تعليمية</div>
+</div>
+<div class="stat-card">
+<div class="stat-num"><span id="stat-tips-num">+30</span></div>
+<div class="stat-label">نصيحة عملية</div>
+</div>
+</div>
+</header>
+<!-- Navigation -->
+<nav aria-label="أقسام الدليل" class="nav-container" role="navigation">
+<button aria-label="الحماية" class="nav-btn active" onclick="showSection('protection', this)" type="button">
+<span class="nav-icon">🛡️</span>
+<span class="nav-label">الحماية</span>
+</button>
+<button aria-label="محاكاة الاختراق" class="nav-btn" onclick="showSection('simulation', this)" type="button">
+<span class="nav-icon">🎯</span>
+<span class="nav-label">محاكاة اختراق</span>
+</button>
+<button aria-label="المسابقة" class="nav-btn" onclick="showSection('quiz', this)" type="button">
+<span class="nav-icon">🏆</span>
+<span class="nav-label">المسابقة</span>
+</button>
+<button aria-label="نصائح سريعة" class="nav-btn" onclick="showSection('tips', this)" type="button">
+<span class="nav-icon">💡</span>
+<span class="nav-label">نصائح سريعة</span>
+</button>
+<button aria-label="الحملة التوعوية" class="nav-btn" onclick="showSection('campaign', this)" type="button">
+<span class="nav-icon">📣</span>
+<span class="nav-label">الحملة</span>
+</button>
+</nav>
+<!-- SECTION 1: Protection -->
+<section class="section active" id="section-protection">
+<div class="section-title">🛡️ حماية الحسابات الشخصية</div>
+<p class="section-subtitle">تطبيقات عملية فورية لتأمين حساباتك على الإنترنت من أشهر أساليب الهجوم. اضغط على كل نقطة لتحديد ما طبّقته!</p>
+<div class="cards-grid">
+<div class="prot-card">
+<div class="prot-card-header">
+<div class="prot-icon">🔑</div>
+<div>
+<div class="prot-card-title">كلمات المرور القوية</div>
+<div class="prot-card-sub">الخط الأول لحمايتك — لا تهاون</div>
+</div>
+</div>
+<ul class="checklist">
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>استخدم 12 حرفاً على الأقل تشمل أرقاماً ورموزاً</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>لا تكرر نفس الكلمة في أكثر من موقع</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>استخدم مدير كلمات مرور مثل Bitwarden</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>اجعل كلمة المرور عبارة لا كلمة</li>
+</ul>
+</div>
+<div class="prot-card">
+<div class="prot-card-header">
+<div class="prot-icon">🔐</div>
+<div>
+<div class="prot-card-title">المصادقة الثنائية (2FA)</div>
+<div class="prot-card-sub">طبقة حماية إضافية لا غنى عنها</div>
+</div>
+</div>
+<ul class="checklist">
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>فعّل 2FA في جميع حساباتك المهمة فوراً</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>استخدم تطبيق Authenticator بدلاً من SMS</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>احتفظ بنسخة من رموز الاسترداد في مكان آمن</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>استخدم مفاتيح أمان مادية (YubiKey) للحسابات الحساسة</li>
+</ul>
+</div>
+<div class="prot-card">
+<div class="prot-card-header">
+<div class="prot-icon">📧</div>
+<div>
+<div class="prot-card-title">أمان البريد الإلكتروني</div>
+<div class="prot-card-sub">البريد هو مفتاح جميع حساباتك</div>
+</div>
+</div>
+<ul class="checklist">
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>استخدم بريداً مخصصاً للحسابات المهمة فقط</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>لا تنقر على روابط في رسائل مجهولة المصدر</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>تحقق من عنوان المرسل بدقة قبل أي إجراء</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>استخدم ProtonMail للاتصالات الحساسة</li>
+</ul>
+</div>
+<div class="prot-card">
+<div class="prot-card-header">
+<div class="prot-icon">📡</div>
+<div>
+<div class="prot-card-title">أمان الشبكة</div>
+<div class="prot-card-sub">الشبكة العامة بيئة خطرة</div>
+</div>
+</div>
+<ul class="checklist">
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>لا تستخدم الواي فاي العام لأعمال حساسة</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>استخدم VPN موثوق عند الاتصال بشبكات عامة</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>تأكد من HTTPS (القفل) في شريط المتصفح دائماً</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>عطّل الاتصال التلقائي بالشبكات المفتوحة</li>
+</ul>
+</div>
+<div class="prot-card">
+<div class="prot-card-header">
+<div class="prot-icon">📱</div>
+<div>
+<div class="prot-card-title">أمان الأجهزة المحمولة</div>
+<div class="prot-card-sub">هاتفك يحمل حياتك الرقمية</div>
+</div>
+</div>
+<ul class="checklist">
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>فعّل قفل الشاشة بـ PIN أو بصمة قوية</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>حدّث نظام التشغيل والتطبيقات فور توفر تحديثات</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>راجع صلاحيات التطبيقات وأزل ما هو مشبوه</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>فعّل التشفير الكامل للجهاز من الإعدادات</li>
+</ul>
+</div>
+<div class="prot-card">
+<div class="prot-card-header">
+<div class="prot-icon">☁️</div>
+<div>
+<div class="prot-card-title">حماية التخزين السحابي</div>
+<div class="prot-card-sub">بياناتك ليست محمية تلقائياً</div>
+</div>
+</div>
+<ul class="checklist">
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>لا ترفع مستندات حساسة دون تشفير مسبق</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>راجع قائمة التطبيقات المرتبطة بحسابك السحابي</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>فعّل إشعارات تسجيل الدخول من أجهزة جديدة</li>
+<li onclick="toggleCheck(this)"><span class="check-box">✓</span>احتفظ بنسخ احتياطية محلية بجانب السحابة</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- SECTION 2: Simulation -->
+<section class="section" id="section-simulation">
+<div class="section-title">🎯 محاكاة الاختراق</div>
+<p class="section-subtitle">اختبر نفسك في سيناريوهات حقيقية — هل ستتخذ القرار الصحيح؟</p>
+<div class="sim-container">
+<div class="sim-header">
+<div class="sim-title" id="sim-title">السيناريو الأول</div>
+<div class="sim-desc" id="sim-progress-text">السيناريو 1 من 4</div>
+</div>
+<div class="sim-body">
+<div class="progress-bar-wrap">
+<div class="progress-bar-fill" id="sim-progress-bar" style="width:25%"></div>
+</div>
+<div class="sim-scenario">
+<div class="scenario-icon" id="sim-icon">📧</div>
+<p id="sim-text"></p>
+</div>
+<div class="sim-options" id="sim-options"></div>
+<div class="sim-result" id="sim-result"></div>
+<button class="sim-next-btn" id="sim-next" onclick="nextScenario()">التالي ←</button>
+</div>
+</div>
+</section>
+<!-- SECTION 3: Quiz -->
+<section class="section" id="section-quiz">
+<div class="section-title">🏆 اختبر معلوماتك</div>
+<p class="section-subtitle">أسئلة متنوعة حول الأمن السيبراني — كم ستحصل؟</p>
+<div class="quiz-wrap">
+<div class="quiz-card" id="quiz-card">
+<!-- Filled by JS -->
+</div>
+</div>
+</section>
+<!-- SECTION 4: Tips -->
+<section class="section" id="section-tips">
+<div class="section-title">💡 نصائح سريعة</div>
+<p class="section-subtitle">أكثر من 30 نصيحة عملية يمكنك تطبيقها الآن</p>
+<div class="tips-grid" id="tips-grid"></div>
+</section>
+<!-- SECTION 5: Campaign -->
+<section class="section" id="section-campaign">
+<div class="section-title">📣 الحملة التوعوية</div>
+<p class="section-subtitle">نشر الوعي الرقمي وتعزيز ثقافة الأمن السيبراني</p>
+<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px;">
+<div style="background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:28px;box-shadow:var(--shadow);text-align:center;">
+<div style="font-size:48px;margin-bottom:12px;">🎓</div>
+<div style="font-family:'Cairo',sans-serif;font-size:17px;font-weight:800;color:var(--text);margin-bottom:8px;">التعليم الرقمي</div>
+<p style="font-size:14px;color:var(--text-muted);line-height:1.8;">نشر الوعي الرقمي بين طلاب المرحلة الابتدائية لبناء جيل واعٍ بمخاطر الإنترنت وكيفية التعامل معها بأمان.</p>
+</div>
+<div style="background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:28px;box-shadow:var(--shadow);text-align:center;">
+<div style="font-size:48px;margin-bottom:12px;">🏫</div>
+<div style="font-family:'Cairo',sans-serif;font-size:17px;font-weight:800;color:var(--text);margin-bottom:8px;">مدرسة السلام الابتدائية</div>
+<p style="font-size:14px;color:var(--text-muted);line-height:1.8;">الحملة موجّهة لطلاب وأولياء أمور مدرسة السلام الابتدائية بسيهات، في إطار مبادرات التحول الرقمي الآمن.</p>
+</div>
+<div style="background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:28px;box-shadow:var(--shadow);text-align:center;">
+<div style="font-size:48px;margin-bottom:12px;">🤝</div>
+<div style="font-family:'Cairo',sans-serif;font-size:17px;font-weight:800;color:var(--text);margin-bottom:8px;">شارك الدليل</div>
+<p style="font-size:14px;color:var(--text-muted);line-height:1.8;">المعرفة أقوى سلاح. شارك هذا الدليل مع عائلتك وأصدقائك لحمايتهم من مخاطر الفضاء الإلكتروني.</p>
+<button onclick="shareGuide()" style="margin-top:16px;padding:10px 24px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">📤 مشاركة الدليل</button>
+</div>
+<div style="background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:28px;box-shadow:var(--shadow);text-align:center;">
+<div style="font-size:48px;margin-bottom:12px;">📊</div>
+<div style="font-family:'Cairo',sans-serif;font-size:17px;font-weight:800;color:var(--text);margin-bottom:8px;">إحصائيات مهمة</div>
+<div style="display:flex;flex-direction:column;gap:10px;text-align:right;">
+<div style="display:flex;justify-content:space-between;font-size:14px;"><span style="color:var(--text-muted);">معدل استخدام كلمات مرور ضعيفة</span><strong style="color:#ef4444;">63%</strong></div>
+<div style="display:flex;justify-content:space-between;font-size:14px;"><span style="color:var(--text-muted);">الاختراقات بسبب التصيّد</span><strong style="color:#ef4444;">80%</strong></div>
+<div style="display:flex;justify-content:space-between;font-size:14px;"><span style="color:var(--text-muted);">يستخدمون 2FA</span><strong style="color:var(--accent);">28%</strong></div>
+<div style="display:flex;justify-content:space-between;font-size:14px;"><span style="color:var(--text-muted);">الاختراقات القابلة للمنع</span><strong style="color:var(--accent);">87%</strong></div>
+</div>
+</div>
+</div>
+
+<div style="margin-top:16px;padding:14px 16px;border-radius:14px;background:#eff6ff;border:1px solid var(--border);font-size:13px;color:var(--text-muted);line-height:1.8;">
+  <strong style="color:var(--primary);">ملاحظة تقنية:</strong> تم تفعيل Google Analytics 4 في هذه النسخة باستخدام المعرّف <code style="background:#fff;padding:2px 6px;border-radius:8px;">G-TB0ENH4BEM</code>.
+</div>
+</section>
+</div>
+<!-- Footer -->
+<footer class="footer">
+<div class="footer-logo">🛡️ درعك الرقمي</div>
+<div class="footer-sub">مبادرة من شعبة المهارات الرقمية</div>
+<div class="footer-sub" style="margin-top:6px;">بإشراف الأستاذ / بندر الشهري</div>
+</footer>
+<!-- Sticky Bottom Bar -->
+<div class="sticky-bar">
+<span>🛡️</span>
+<span>مبادرة من شعبة المهارات الرقمية</span>
+<span class="bar-sep">|</span>
+<span>بإشراف الأستاذ / بندر الشهري</span>
+</div>
+<script>
+// ── NAVIGATION (إصلاح الاعتماد على event) ──
+function showSection(name, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const sec = document.getElementById('section-'+name);
+  if(sec) sec.classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(name==='quiz' && !quizStarted) initQuiz();
+  if(name==='tips') renderTips();
+  if(name==='simulation') initSimulation();
+}
+
+
+// ── PARTICLES ──
+const particles = ['0','1','🔒','🛡️','01','10','//','{}','</>','✓','#','@'];
+function spawnParticle() {
+  const el = document.createElement('div');
+  el.className = 'particle';
+  el.textContent = particles[Math.floor(Math.random()*particles.length)];
+  el.style.left = Math.random()*100 + 'vw';
+  el.style.animationDuration = (8 + Math.random()*12) + 's';
+  el.style.animationDelay = '0s';
+  el.style.fontSize = (10 + Math.random()*8) + 'px';
+  document.querySelector('.bg-canvas').appendChild(el);
+  setTimeout(() => el.remove(), 20000);
+}
+setInterval(spawnParticle, 800);
+
+// ── NAVIGATION ──
+
+
+// ── CHECKLIST ──
+function toggleCheck(li) {
+  li.classList.toggle('checked');
+}
+
+// ── SIMULATION DATA ──
+const scenarios = [
+  {
+    icon: '📧',
+    title: 'السيناريو الأول',
+    text: 'وصلك بريد إلكتروني من "البنك الأهلي" يطلب منك النقر على رابط وإدخال بيانات حسابك لـ"تحديث معلوماتك". الرابط يبدو رسمياً ولكنه يختلف قليلاً عن الموقع الحقيقي. ماذا تفعل؟',
+    options: [
+      { text: 'أنقر على الرابط فوراً وأدخل بياناتي', correct: false },
+      { text: 'أحذف الرسالة وأتصل بالبنك مباشرة على الرقم الرسمي', correct: true },
+      { text: 'أرسل الرابط لصديق ليتحقق منه', correct: false },
+      { text: 'أدخل بيانات وهمية لأختبر الموقع', correct: false }
+    ],
+    feedback: {
+      correct: '✅ ممتاز! هذا هجوم تصيّد (Phishing). البنوك لا تطلب بياناتك عبر البريد الإلكتروني أبداً. الاتصال المباشر على الرقم الرسمي هو الخطوة الصحيحة دائماً.',
+      wrong: '❌ خطأ! هذا هجوم تصيّد (Phishing) كلاسيكي. البنوك لا تطلب بياناتك عبر روابط في البريد. يجب حذف الرسالة والتواصل مع البنك على رقمه الرسمي فقط.'
+    }
+  },
+  {
+    icon: '📱',
+    title: 'السيناريو الثاني',
+    text: 'أنت في مقهى وتريد تسجيل الدخول لحسابك البنكي. الواي فاي المجاني متاح. ما هو القرار الأمثل؟',
+    options: [
+      { text: 'أتصل بالواي فاي المجاني مباشرة', correct: false },
+      { text: 'أستخدم بيانات هاتفي أو VPN مع الواي فاي', correct: true },
+      { text: 'أطلب من النادل كلمة مرور الواي فاي الخاصة', correct: false },
+      { text: 'لا يهم، المواقع المشفرة HTTPS آمنة تماماً', correct: false }
+    ],
+    feedback: {
+      correct: '✅ صحيح! الشبكات العامة خطرة لأن المهاجمين يمكنهم رؤية بياناتك. استخدام بيانات هاتفك أو VPN يحميك من هجمات Man-in-the-Middle.',
+      wrong: '❌ خطأ! الشبكات العامة غير آمنة حتى مع HTTPS. يمكن للمهاجمين تنفيذ هجمات اعتراض البيانات. استخدم دائماً بيانات هاتفك أو VPN للعمليات الحساسة.'
+    }
+  },
+  {
+    icon: '🔑',
+    title: 'السيناريو الثالث',
+    text: 'أحد أصدقائك أنشأ كلمة مرور "Mohamed1990!" ويعتقد أنها قوية جداً. ما رأيك؟',
+    options: [
+      { text: 'هي قوية لأنها تحتوي على أرقام ورموز وأحرف', correct: false },
+      { text: 'ضعيفة لأن الاسم وسنة الميلاد من أوائل ما يُجرَّب في الهجمات', correct: true },
+      { text: 'مقبولة إذا لم يشاركها مع أحد', correct: false },
+      { text: 'قوية إذا تم تغييرها كل سنة', correct: false }
+    ],
+    feedback: {
+      correct: '✅ إجابة ممتازة! الأسماء وسنوات الميلاد هي أولى المعلومات في قواميس الاختراق. كلمة المرور يجب أن تكون عشوائية وطويلة، مثل: "Wr4x!mQ9@kL2" أو عبارة طويلة.',
+      wrong: '❌ خطأ! رغم احتوائها على أرقام ورموز، إلا أن الاسم وسنة الميلاد سهلا التخمين جداً. هجمات القاموس (Dictionary Attack) تجرّب هذه الأنماط أولاً.'
+    }
+  },
+  {
+    icon: '🔐',
+    title: 'السيناريو الرابع',
+    text: 'تلقيت رسالة SMS تحتوي على رمز تحقق (OTP) من حسابك في تويتر. لم تكن أنت من طلبه. اتصل بك أحدهم يدّعي أنه من الدعم الفني ويطلب الرمز. ماذا تفعل؟',
+    options: [
+      { text: 'أعطيه الرمز لأنه دعم فني رسمي', correct: false },
+      { text: 'أرفض إعطاء الرمز وأغير كلمة المرور فوراً', correct: true },
+      { text: 'أتحقق من هويته أولاً ثم أعطيه الرمز', correct: false },
+      { text: 'أعطيه الرمز بعد 5 دقائق ليكون منتهياً', correct: false }
+    ],
+    feedback: {
+      correct: '✅ صحيح تماماً! لا يطلب الدعم الفني الأصيل رموز OTP أبداً. هذا هجوم SIM Swapping أو Social Engineering. غيّر كلمة المرور فوراً وفعّل 2FA عبر تطبيق لا SMS.',
+      wrong: '❌ خطأ خطير! الدعم الفني الحقيقي لا يطلب رموز OTP أبداً. هذا هجوم هندسة اجتماعية (Social Engineering). لا تعطِ أي رمز OTP لأي شخص مهما كان.'
+    }
+  }
+];
+
+let simIndex = 0;
+let simAnswered = false;
+
+function initSimulation() {
+  simIndex = 0;
+  simAnswered = false;
+  renderScenario();
+}
+
+function renderScenario() {
+  const s = scenarios[simIndex];
+  document.getElementById('sim-title').textContent = s.title;
+  document.getElementById('sim-progress-text').textContent = `السيناريو ${simIndex+1} من ${scenarios.length}`;
+  document.getElementById('sim-progress-bar').style.width = ((simIndex+1)/scenarios.length*100) + '%';
+  document.getElementById('sim-icon').textContent = s.icon;
+  document.getElementById('sim-text').textContent = s.text;
+
+  const container = document.getElementById('sim-options');
+  container.innerHTML = '';
+  s.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'sim-option';
+    btn.innerHTML = `<span style="width:28px;height:28px;border-radius:8px;background:rgba(10,110,189,0.1);color:var(--primary);font-weight:900;font-size:13px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">${String.fromCharCode(65+i)}</span> ${opt.text}`;
+    btn.onclick = () => answerScenario(i);
+    container.appendChild(btn);
+  });
+
+  document.getElementById('sim-result').className = 'sim-result';
+  document.getElementById('sim-result').textContent = '';
+  document.getElementById('sim-next').className = 'sim-next-btn';
+  simAnswered = false;
+
+  if(simIndex === scenarios.length-1) {
+    document.getElementById('sim-next').textContent = '🔄 إعادة المحاكاة';
+  } else {
+    document.getElementById('sim-next').textContent = 'التالي ←';
+  }
+}
+
+function answerScenario(i) {
+  if(simAnswered) return;
+  simAnswered = true;
+  const s = scenarios[simIndex];
+  const buttons = document.querySelectorAll('.sim-option');
+  const isCorrect = s.options[i].correct;
+
+  buttons[i].classList.add(isCorrect ? 'correct' : 'wrong');
+  s.options.forEach((opt, j) => { if(opt.correct) buttons[j].classList.add('correct'); });
+
+  const result = document.getElementById('sim-result');
+  result.textContent = isCorrect ? s.feedback.correct : s.feedback.wrong;
+  result.className = 'sim-result show ' + (isCorrect ? 'good' : 'bad');
+
+  document.getElementById('sim-next').className = 'sim-next-btn show';
+}
+
+function nextScenario() {
+  simIndex++;
+  if(simIndex >= scenarios.length) simIndex = 0;
+  renderScenario();
+}
+
+// ── QUIZ DATA ──
+const quizQuestions = [
+  {
+    q: 'ما هو أقل عدد مُوصَى به لأحرف كلمة المرور القوية؟',
+    opts: ['6 أحرف', '8 أحرف', '12 حرفاً', '20 حرفاً'],
+    correct: 2,
+    feedback: 'الحد الأدنى الموصى به حالياً هو 12 حرفاً تشمل أحرفاً كبيرة وصغيرة وأرقاماً ورموزاً لضمان أمان كافٍ ضد هجمات القوة العمياء.'
+  },
+  {
+    q: 'أي من التالي أكثر أماناً للمصادقة الثنائية؟',
+    opts: ['رمز SMS على هاتفك', 'تطبيق Authenticator', 'الإجابة على سؤال سري', 'عنوان بريدك الإلكتروني'],
+    correct: 1,
+    feedback: 'تطبيق Authenticator أكثر أماناً لأن رموز SMS يمكن اعتراضها عبر هجوم SIM Swapping، بينما رموز التطبيق تُولَّد محلياً وتنتهي خلال 30 ثانية.'
+  },
+  {
+    q: 'ما الذي يعنيه رمز القفل (HTTPS) في شريط المتصفح؟',
+    opts: ['الموقع آمن 100% ولا يمكن اختراقه', 'الاتصال بين جهازك والموقع مشفّر', 'الموقع حاصل على ترخيص حكومي', 'بياناتك محفوظة على خوادم آمنة'],
+    correct: 1,
+    feedback: 'HTTPS يعني تشفير الاتصال بين جهازك والخادم فقط، مما يمنع اعتراض البيانات أثناء النقل. لكنه لا يضمن أن الموقع نفسه آمن أو موثوق.'
+  },
+  {
+    q: 'ما هو هجوم "التصيّد الاحتيالي" (Phishing)؟',
+    opts: ['اختراق قواعد البيانات مباشرة', 'خداع المستخدم للكشف عن بياناته طوعاً', 'تثبيت فيروس على جهاز الضحية', 'سرقة الهاتف وسحب البيانات منه'],
+    correct: 1,
+    feedback: 'التصيّد هو خداع المستخدم عبر رسائل أو مواقع مزيفة تشبه الحقيقية، لإقناعه بإدخال بياناته طوعاً. هو مسؤول عن 80% من الاختراقات الإلكترونية.'
+  },
+  {
+    q: 'ما أفضل ممارسة عند استخدام شبكة واي فاي عامة؟',
+    opts: ['استخدامها بشكل طبيعي ما دام HTTPS مفعّل', 'استخدام VPN موثوق', 'عدم فتح أي مواقع نهائياً', 'تغيير كلمة مرور الراوتر'],
+    correct: 1,
+    feedback: 'استخدام VPN ينشئ نفقاً مشفراً لكل بياناتك، مما يمنع المهاجمين على نفس الشبكة من رؤية أي شيء حتى مع الشبكات غير المشفرة.'
+  },
+  {
+    q: 'ماذا يجب أن تفعل بعد انتهاء استخدام حساب على جهاز مشترك؟',
+    opts: ['إغلاق المتصفح فقط', 'تسجيل الخروج ثم مسح سجل التصفح', 'تغيير كلمة المرور بعد الانتهاء', 'لا يهم إذا كان الجهاز موثوقاً'],
+    correct: 1,
+    feedback: 'تسجيل الخروج ومسح السجل ضروري لأن إغلاق المتصفح وحده لا يمحو الجلسة أو الكوكيز التي قد تتيح للشخص التالي الوصول لحسابك.'
+  }
+];
+
+let quizIndex = 0;
+let quizScore = 0;
+let quizStarted = false;
+let quizAnswered = false;
+
+function initQuiz() {
+  quizIndex = 0;
+  quizScore = 0;
+  quizStarted = true;
+  quizAnswered = false;
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  if(quizIndex >= quizQuestions.length) {
+    showQuizScore();
+    return;
+  }
+  const q = quizQuestions[quizIndex];
+  const letters = ['أ','ب','ج','د'];
+  document.getElementById('quiz-card').innerHTML = `
+    <div class="quiz-q-header">
+      <div class="quiz-q-num">السؤال ${quizIndex+1} / ${quizQuestions.length}</div>
+    </div>
+    <div class="progress-bar-wrap" style="margin-bottom:20px;">
+      <div class="progress-bar-fill" style="width:${((quizIndex)/quizQuestions.length)*100}%"></div>
+    </div>
+    <div class="quiz-q-text">${q.q}</div>
+    <div class="quiz-options">
+      ${q.opts.map((opt,i) => `
+        <button class="quiz-opt" onclick="answerQuiz(${i})" id="qopt-${i}">
+          <span class="opt-letter">${letters[i]}</span>
+          ${opt}
+        </button>
+      `).join('')}
+    </div>
+    <div class="quiz-feedback" id="quiz-feedback"></div>
+    <div class="quiz-nav">
+      <button class="quiz-btn quiz-btn-primary" id="quiz-next-btn" onclick="nextQuestion()" style="display:none;">
+        ${quizIndex === quizQuestions.length-1 ? '🏆 عرض النتيجة' : 'السؤال التالي ←'}
+      </button>
+      <div style="font-size:13px;color:var(--text-muted);">السؤال ${quizIndex+1} من ${quizQuestions.length}</div>
+    </div>
+  `;
+  quizAnswered = false;
+}
+
+function answerQuiz(i) {
+  if(quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQuestions[quizIndex];
+  const isCorrect = i === q.correct;
+  if(isCorrect) quizScore++;
+
+  document.querySelectorAll('.quiz-opt').forEach(btn => btn.classList.add('answered'));
+  document.getElementById('qopt-'+i).classList.add(isCorrect ? 'correct' : 'wrong');
+  document.getElementById('qopt-'+q.correct).classList.add('correct');
+
+  const fb = document.getElementById('quiz-feedback');
+  fb.textContent = (isCorrect ? '✅ ' : '❌ ') + q.feedback;
+  fb.className = 'quiz-feedback show ' + (isCorrect ? 'correct' : 'wrong');
+
+  document.getElementById('quiz-next-btn').style.display = 'inline-block';
+}
+
+function nextQuestion() {
+  quizIndex++;
+  renderQuizQuestion();
+}
+
+function showQuizScore() {
+  const pct = Math.round(quizScore / quizQuestions.length * 100);
+  let emoji, msg, cls;
+  if(pct >= 80) { emoji='🏆'; msg='ممتاز! أنت درع رقمي حقيقي'; cls='great'; }
+  else if(pct >= 50) { emoji='⭐'; msg='جيد! يمكنك تحسين مستواك أكثر'; cls='good'; }
+  else { emoji='📚'; msg='تحتاج لمزيد من التعلم — راجع قسم الحماية'; cls='poor'; }
+
+  document.getElementById('quiz-card').innerHTML = `
+    <div class="quiz-score-card">
+      <div class="score-emoji">${emoji}</div>
+      <div class="score-num">${quizScore}/${quizQuestions.length}</div>
+      <div class="score-label">${pct}% إجابات صحيحة</div>
+      <div class="score-msg ${cls}">${msg}</div>
+      <button class="quiz-btn quiz-btn-primary" onclick="initQuiz()">🔄 إعادة الاختبار</button>
+    </div>
+  `;
+}
+
+// ── TIPS DATA ──
+const tipsData = [
+  { icon:'🔑', title:'كلمة مرور طويلة', body:'استخدم عبارات بدلاً من كلمات مفردة. "أنا@أحب_القهوة2024!" أقوى بكثير من "Coffee123".' },
+  { icon:'🛡️', title:'مدير كلمات المرور', body:'استخدم Bitwarden أو 1Password لتخزين وإنشاء كلمات مرور قوية وفريدة لكل موقع.' },
+  { icon:'📲', title:'2FA دائماً', body:'فعّل المصادقة الثنائية في كل حساباتك الهامة — البريد، البنك، وسائل التواصل.' },
+  { icon:'🕵️', title:'تحقق من الروابط', body:'قبل النقر على أي رابط، مرّر الماوس فوقه لرؤية الرابط الحقيقي أو انسخه وتحقق منه.' },
+  { icon:'🔄', title:'التحديثات الدورية', body:'حدّث نظامك وتطبيقاتك دائماً — معظم التحديثات تسد ثغرات أمنية مكتشفة حديثاً.' },
+  { icon:'📵', title:'الواي فاي العام', body:'تجنب الأعمال الحساسة على شبكات عامة. إذا اضطررت، استخدم VPN موثوقاً.' },
+  { icon:'📧', title:'بريد منفصل', body:'خصص بريداً للتسجيل في المواقع وآخر للعمل والأعمال الحساسة لتقليل مخاطر التصيّد.' },
+  { icon:'👁️', title:'راقب حساباتك', body:'راجع نشاط حساباتك البنكية والبريد أسبوعياً للكشف المبكر عن أي نشاط مشبوه.' },
+  { icon:'💾', title:'النسخ الاحتياطي', body:'قاعدة 3-2-1: 3 نسخ، على 2 وسيلتين مختلفتين، منها 1 خارج الموقع (سحابة أو مكان آخر).' },
+  { icon:'🔒', title:'قفل الشاشة', body:'اضبط قفل الشاشة التلقائي على دقيقة واحدة في أجهزتك — هذا يمنع الوصول غير المصرح به.' },
+  { icon:'🌐', title:'تحقق من HTTPS', body:'قبل إدخال أي بيانات، تأكد من وجود القفل وبروتوكول https:// في عنوان الموقع.' },
+  { icon:'🧹', title:'نظف التطبيقات', body:'احذف التطبيقات التي لا تستخدمها. كل تطبيق قديم هو ثغرة محتملة في جهازك.' },
+  { icon:'🤐', title:'لا تشارك OTP', body:'لا تشارك رموز التحقق مع أحد مهما كان — حتى لو ادّعى أنه دعم فني أو موظف بنك.' },
+  { icon:'📊', title:'مراجعة الصلاحيات', body:'راجع صلاحيات تطبيقاتك شهرياً. لماذا يحتاج تطبيق ألعاب للوصول لجهات اتصالك؟' },
+  { icon:'🔐', title:'تشفير الملفات الحساسة', body:'قبل رفع أي وثائق حساسة للسحابة، شفّرها باستخدام VeraCrypt أو برامج مشابهة.' },
+];
+
+function renderTips() {
+  const grid = document.getElementById('tips-grid');
+  if(grid.children.length > 0) return;
+  tipsData.forEach((tip, i) => {
+    const el = document.createElement('div');
+    el.className = 'tip-card';
+    el.style.animationDelay = (i*0.05) + 's';
+    el.innerHTML = `
+      <div class="tip-num">${i+1}</div>
+      <div class="tip-icon">${tip.icon}</div>
+      <div class="tip-title">${tip.title}</div>
+      <div class="tip-body">${tip.body}</div>
+    `;
+    grid.appendChild(el);
+  });
+}
+
+// ── SHARE ──
+function shareGuide() {
+  if(navigator.share) {
+    navigator.share({ title:'دليل الأمن السيبراني التفاعلي', text:'احمِ حساباتك — كن درعك الرقمي', url: window.location.href });
+  } else {
+    navigator.clipboard.writeText(window.location.href).then(() => alert('تم نسخ الرابط! شاركه مع من تحب 🛡️'));
+  }
+}
+
+// Init simulation on load
+initSimulation();
+
+
+// ── تحديث عدّاد النصائح تلقائياً حسب عدد tipsData ──
+function updateTipsStatEducational(){
+  const el = document.getElementById('stat-tips-num');
+  if(el && typeof tipsData !== 'undefined') el.textContent = '+' + tipsData.length;
+}
+window.addEventListener('DOMContentLoaded', updateTipsStatEducational);
+
+// ── GA4 HELPER ──
+function trackGA4Event(eventName, params = {}) {
+  if (typeof gtag === 'function') {
+    gtag('event', eventName, params);
+  }
+}
+
+// تتبع مشاركة الدليل
+const originalShareGuide = typeof shareGuide === 'function' ? shareGuide : null;
+if (originalShareGuide) {
+  shareGuide = function() {
+    trackGA4Event('share_guide', { method: navigator.share ? 'native_share' : 'copy_link' });
+    return originalShareGuide.apply(this, arguments);
+  }
+}
+
+</script>
+</body>
+</html>
